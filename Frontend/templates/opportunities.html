@@ -1,0 +1,282 @@
+{% extends 'base.html' %}
+
+{% block title %}All Opportunities - {{ student.user.username }}{% endblock %}
+
+{% block content %}
+<style>
+.opportunities-header {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.opportunities-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%23667eea" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="%23764ba2" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+.header-content {
+    position: relative;
+    z-index: 1;
+}
+
+.opportunity-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.opportunity-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--primary-gradient);
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+}
+
+.opportunity-card:hover::before {
+    transform: scaleY(1);
+}
+
+.opportunity-card:hover {
+    transform: translateX(5px);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.15);
+}
+
+.opportunity-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 1rem;
+}
+
+.opportunity-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+}
+
+.opportunity-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    background: #f8fafc;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+}
+
+.meta-item i {
+    color: var(--accent-color);
+}
+
+.opportunity-details {
+    margin-bottom: 1rem;
+}
+
+.detail-item {
+    margin-bottom: 0.5rem;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: start;
+    gap: 0.5rem;
+}
+
+.detail-item i {
+    color: var(--accent-color);
+    margin-top: 0.1rem;
+    flex-shrink: 0;
+}
+
+.detail-item strong {
+    color: var(--text-dark);
+    font-weight: 600;
+}
+
+.btn-apply {
+    background: var(--primary-gradient);
+    border: none;
+    border-radius: 25px;
+    padding: 0.5rem 1.5rem;
+    font-weight: 600;
+    color: white;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-apply:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    color: white;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+.empty-icon {
+    font-size: 4rem;
+    color: var(--text-light);
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.empty-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+}
+
+.empty-text {
+    color: var(--text-light);
+    margin-bottom: 2rem;
+}
+
+.back-btn {
+    background: white;
+    border: 2px solid var(--accent-color);
+    color: var(--accent-color);
+    border-radius: 25px;
+    padding: 0.5rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.back-btn:hover {
+    background: var(--primary-gradient);
+    border-color: transparent;
+    color: white;
+    transform: translateY(-2px);
+}
+</style>
+
+<div class="opportunities-header">
+    <div class="header-content">
+        <h1 class="h2 mb-2">All Matched Opportunities</h1>
+        <p class="text-muted mb-0">
+            <i class="fas fa-user me-2"></i>{{ student.user.username }} | 
+            <i class="fas fa-book me-2"></i>{{ student.domain }} 
+            {% if student.sub_domain %}| <i class="fas fa-microscope me-2"></i>{{ student.sub_domain }}{% endif %}
+        </p>
+    </div>
+</div>
+
+{% if opportunities %}
+    {% for opp in opportunities %}
+    <div class="opportunity-card">
+        <div class="opportunity-header">
+            <div>
+                <h3 class="opportunity-title">{{ opp.title }}</h3>
+                <div class="opportunity-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-university"></i>
+                        <span>{{ opp.university }}</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-tag"></i>
+                        <span>{{ opp.category|title }}</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-book-open"></i>
+                        <span>{{ opp.domain|default:"General" }}</span>
+                    </div>
+                    {% if opp.sub_domain %}
+                    <div class="meta-item">
+                        <i class="fas fa-microscope"></i>
+                        <span>{{ opp.sub_domain }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="opportunity-details">
+            {% if opp.deadline %}
+            <div class="detail-item">
+                <i class="fas fa-calendar-alt"></i>
+                <div>
+                    <strong>Deadline:</strong> {{ opp.deadline }}
+                </div>
+            </div>
+            {% endif %}
+            {% if opp.eligibility %}
+            <div class="detail-item">
+                <i class="fas fa-user-check"></i>
+                <div>
+                    <strong>Eligibility:</strong> {{ opp.eligibility }}
+                </div>
+            </div>
+            {% endif %}
+            {% if opp.skills_required %}
+            <div class="detail-item">
+                <i class="fas fa-tools"></i>
+                <div>
+                    <strong>Skills Required:</strong> {{ opp.skills_required }}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        {% if opp.application_link %}
+        <a href="{{ opp.application_link }}" target="_blank" class="btn-apply">
+            <i class="fas fa-external-link-alt"></i>
+            Apply Now
+        </a>
+        {% endif %}
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="empty-state">
+        <div class="empty-icon">
+            <i class="fas fa-search"></i>
+        </div>
+        <h3 class="empty-title">No Opportunities Found</h3>
+        <p class="empty-text">No opportunities matched your domain yet. Check back later as new opportunities are added regularly!</p>
+        <a href="{% url 'dashboard' %}" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+            Back to Dashboard
+        </a>
+    </div>
+{% endif %}
+{% endblock %}

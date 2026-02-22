@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+sqlalchemy
+psycopg2-binary
+apscheduler
+python-dotenv
+google-genai
+feedparser
+requests
+beautifulsoup4

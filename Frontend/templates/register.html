@@ -1,0 +1,290 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - Ivy League Opportunities{% endblock %}
+
+{% block content %}
+<style>
+.register-container {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+    border-radius: 24px;
+    padding: 3rem 2rem;
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+}
+
+.register-card {
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    max-width: 600px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.register-header {
+    background: var(--primary-gradient);
+    color: white;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    position: relative;
+}
+
+.register-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+}
+
+.register-header h3 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 1.8rem;
+}
+
+.register-header p {
+    margin: 0.5rem 0 0;
+    opacity: 0.9;
+    font-size: 1rem;
+}
+
+.register-body {
+    padding: 2.5rem 2rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.form-control {
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1rem 1rem 1rem 3rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #f8fafc;
+}
+
+.form-control:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    background: white;
+}
+
+select.form-control {
+    padding: 1rem;
+    cursor: pointer;
+}
+
+.input-icon {
+    position: absolute;
+    left: 1rem;
+    top: 2.8rem;
+    color: var(--text-light);
+    font-size: 1.1rem;
+    z-index: 10;
+}
+
+.btn-register {
+    width: 100%;
+    background: var(--primary-gradient);
+    border: none;
+    border-radius: 12px;
+    padding: 1rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: white;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+}
+
+.btn-register:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+}
+
+.login-link {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.login-link a {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.login-link a:hover {
+    color: #764ba2;
+    text-decoration: underline;
+}
+
+.password-strength {
+    margin-top: 0.5rem;
+    height: 4px;
+    border-radius: 2px;
+    background: #e2e8f0;
+    overflow: hidden;
+}
+
+.password-strength-bar {
+    height: 100%;
+    width: 0;
+    transition: all 0.3s ease;
+    border-radius: 2px;
+}
+
+.strength-weak { background: #f56565; width: 33%; }
+.strength-medium { background: #ed8936; width: 66%; }
+.strength-strong { background: #48bb78; width: 100%; }
+
+.form-hint {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-top: 0.25rem;
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+    
+    .form-group.full-width {
+        grid-column: 1;
+    }
+}
+</style>
+
+<div class="register-container">
+    <div class="register-card">
+        <div class="register-header">
+            <h3><i class="fas fa-graduation-cap me-2"></i>Join Our Community</h3>
+            <p>Create your account and start exploring opportunities</p>
+        </div>
+        <div class="register-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="username" class="form-label">Username</label>
+                        <i class="fas fa-user input-icon"></i>
+                        <input type="text" class="form-control" id="username" name="username" 
+                               placeholder="Choose a unique username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email Address</label>
+                        <i class="fas fa-envelope input-icon"></i>
+                        <input type="email" class="form-control" id="email" name="email" 
+                               placeholder="your.email@example.com" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="password" class="form-label">Password</label>
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" class="form-control" id="password" name="password" 
+                               placeholder="Create a strong password" required
+                               onkeyup="checkPasswordStrength(this.value)">
+                        <div class="password-strength">
+                            <div class="password-strength-bar" id="passwordStrength"></div>
+                        </div>
+                        <div class="form-hint">Use 8+ characters with letters, numbers & symbols</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="domain" class="form-label">Academic Domain</label>
+                        <i class="fas fa-book input-icon"></i>
+                        <select class="form-control" id="domain" name="domain" required>
+                            <option value="">Select your primary domain</option>
+                            <option value="Computer Science">💻 Computer Science</option>
+                            <option value="Engineering">⚙️ Engineering</option>
+                            <option value="Mathematics">📐 Mathematics</option>
+                            <option value="Physics">⚛️ Physics</option>
+                            <option value="Chemistry">🧪 Chemistry</option>
+                            <option value="Biology">🧬 Biology</option>
+                            <option value="Medicine">🏥 Medicine</option>
+                            <option value="Business">💼 Business</option>
+                            <option value="Economics">📊 Economics</option>
+                            <option value="Psychology">🧠 Psychology</option>
+                            <option value="Literature">📚 Literature</option>
+                            <option value="History">📜 History</option>
+                            <option value="Philosophy">💭 Philosophy</option>
+                            <option value="Art">🎨 Art</option>
+                            <option value="Music">🎵 Music</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group full-width">
+                    <label for="sub_domain" class="form-label">Specialization (Optional)</label>
+                    <i class="fas fa-microscope input-icon"></i>
+                    <input type="text" class="form-control" id="sub_domain" name="sub_domain" 
+                           placeholder="e.g., Machine Learning, Quantum Physics, Financial Markets">
+                    <div class="form-hint">Help us find more targeted opportunities for you</div>
+                </div>
+                
+                <button type="submit" class="btn btn-register">
+                    <i class="fas fa-user-plus me-2"></i>Create Account
+                </button>
+            </form>
+            
+            <div class="login-link">
+                <p class="mb-2">Already have an account?</p>
+                <a href="{% url 'login' %}">
+                    <i class="fas fa-sign-in-alt me-1"></i>Sign in here
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function checkPasswordStrength(password) {
+    const strengthBar = document.getElementById('passwordStrength');
+    let strength = 0;
+    
+    if (password.length >= 8) strength++;
+    if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+    if (password.match(/[0-9]/)) strength++;
+    if (password.match(/[^a-zA-Z0-9]/)) strength++;
+    
+    strengthBar.className = 'password-strength-bar';
+    if (strength <= 1) {
+        strengthBar.classList.add('strength-weak');
+    } else if (strength === 2) {
+        strengthBar.classList.add('strength-medium');
+    } else {
+        strengthBar.classList.add('strength-strong');
+    }
+}
+</script>
+{% endblock %}
